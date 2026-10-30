@@ -1,1 +1,45 @@
+name: Build IMAKU Coin Flip APK
 
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'IMAKU_Coin_Flip_Android_Project.zip'
+      - '.github/workflows/build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Extract project ZIP
+        run: unzip -q IMAKU_Coin_Flip_Android_Project.zip
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Build APK
+        run: cd IMAKU_Coin_Flip_Android && gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: IMAKU-COIN-FLIP-APK
+          path: IMAKU_Coin_Flip_Android/app/build/outputs/apk/debug/app-debug.apk
