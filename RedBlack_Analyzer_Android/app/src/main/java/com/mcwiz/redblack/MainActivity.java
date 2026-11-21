@@ -120,7 +120,16 @@ public class MainActivity extends Activity {
             }else captureStatus.setText("Hali: ruhusa ya Screen Capture imekataliwa.");
         } else if(requestCode==REQ_OVERLAY){waitingForOverlay=false;updateCaptureStatus();}
     }
-    @Override protected void onResume(){super.onResume();if(captureStatus!=null)updateCaptureStatus();}
+    @Override protected void onResume(){
+        super.onResume();
+        if(prefs!=null){
+            rounds.clear();
+            String saved=prefs.getString("rounds","");
+            if(!saved.isEmpty())for(String s:saved.split(","))if(s.equals("R")||s.equals("B"))rounds.add(s);
+            if(redCount!=null)refresh();
+        }
+        if(captureStatus!=null)updateCaptureStatus();
+    }
     private void updateCaptureStatus(){
         if(captureStatus==null)return;
         boolean active=getSharedPreferences("capture_state",MODE_PRIVATE).getBoolean("active",false);
