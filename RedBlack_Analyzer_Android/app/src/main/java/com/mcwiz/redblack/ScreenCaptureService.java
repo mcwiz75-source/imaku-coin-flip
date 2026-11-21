@@ -56,6 +56,7 @@ public class ScreenCaptureService extends Service {
     private int stableFrames=0;
     private String savedFingerprint="";
     private long lastSavedAt=0;
+    private long lastFrameAt=0;
     private boolean stopped=false;
 
     @Override public void onCreate(){
@@ -96,6 +97,9 @@ public class ScreenCaptureService extends Service {
             try{
                 image=reader.acquireLatestImage();
                 if(image==null){processing.set(false);return;}
+                long now=System.currentTimeMillis();
+                if(now-lastFrameAt<900){image.close();processing.set(false);return;}
+                lastFrameAt=now;
                 Image.Plane plane=image.getPlanes()[0];ByteBuffer buffer=plane.getBuffer();
                 int pixelStride=plane.getPixelStride(),rowStride=plane.getRowStride();
                 int rowPadding=rowStride-pixelStride*width;
