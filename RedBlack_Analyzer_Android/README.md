@@ -1,17 +1,32 @@
 # SPORTYBET RED BLACK ANALYZER
 
-Native Android starter app for recording Red/Black outcomes and reviewing historical counts.
+Native Android app for recording RED/BLACK outcomes and reviewing historical statistics.
 
-## Included in this build
-- Dark Android dashboard in Swahili.
-- Add RED or BLACK outcomes with one tap.
-- Local on-device history using SharedPreferences.
-- Total counts, percentages, current streak, and last 30-round sample summary.
-- Undo last entry and clear history with confirmation.
-- No SportyBet login, password, betting, deposit, or automatic bet placement.
+## Features in this build
+- Swahili dark dashboard with RED/BLACK counts, percentages, streak and recent history.
+- Local on-device storage.
+- Manual result entry, undo and clear history.
+- User-started Android MediaProjection screen capture.
+- Bundled Google ML Kit Latin text recognition scans visible screen text for exact RED/BLACK words.
+- Floating overlay shows OCR status; tap it or use the persistent notification action to stop capture.
+- OCR saves a detected color after the recognized screen text is stable across frames and changes.
 
-## Important limitations
-This first Android build does not yet read the SportyBet app live, use Android screen-capture permission, or display a floating overlay. The trend display describes recorded past outcomes only and is not a reliable prediction of the next round.
+## First-time setup on the phone
+1. Install and open the APK.
+2. Tap **ANZA KUSOMA SKRINI**.
+3. Allow **Display over other apps** for this app when Android asks, then return and tap Start again.
+4. Android shows its own screen-sharing confirmation. Choose **Start now**.
+5. Open SportyBet and keep its result/history area visible. The floating OCR status bubble appears.
+6. Tap the floating bubble or the notification's **SIMAMISHA** action to stop capture.
+
+Android requires explicit user consent for each screen-capture session. The app does not silently start capture.
+
+## OCR limitations and safe use
+- OCR can misread text, buttons, or other page labels. Check saved history against the game.
+- It recognizes visible text labels RED and BLACK; it does not reliably interpret colored circles or graphics.
+- It may read other RED/BLACK labels on the page. Keep the game history/results area visible and verify entries.
+- It does not log into SportyBet, read passwords, bypass app protections, place bets, or guarantee future outcomes.
+- Recorded frequencies and streaks describe past observations only; they are not reliable predictions.
 
 ## Build APK
-GitHub Actions builds the debug APK when files under `RedBlack_Analyzer_Android/` change. Open the repository's Actions tab, open the latest successful run, and download the artifact named `SPORTYBET-RED-BLACK-ANALYZER-APK`.
+GitHub Actions builds the debug APK when files under `RedBlack_Analyzer_Android/` change. Open the repository's Actions tab, open the latest successful run, and download `SPORTYBET-RED-BLACK-ANALYZER-APK`.
