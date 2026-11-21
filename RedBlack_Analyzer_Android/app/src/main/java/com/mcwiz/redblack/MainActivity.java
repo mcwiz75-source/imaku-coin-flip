@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     private static final int REQ_CAPTURE=4102, REQ_OVERLAY=4103;
     private final ArrayList<String> rounds=new ArrayList<>();
     private SharedPreferences prefs;
-    private TextView totalView,redView,blackView,streakView,recentView,trendView,captureStatus;
+    private TextView totalView,redView,blackView,streakView,recentView,trendView,predictionView,captureStatus;
     private boolean waitingForOverlay=false;
 
     @Override public void onCreate(Bundle state) {
@@ -79,6 +79,7 @@ public class MainActivity extends Activity {
         redView=text("RED: 0 (0.0%)",14,RED,true);history.addView(redView);
         blackView=text("BLACK: 0 (0.0%)",14,0xffc5cad5,true);history.addView(blackView);
         trendView=text("Bado hakuna data ya kutosha.",13,WHITE,false);trendView.setPadding(0,dp(10),0,0);history.addView(trendView);
+        predictionView=text("Makadirio yataonekana baada ya raundi 10.",14,0xfff0c36a,true);predictionView.setPadding(0,dp(12),0,0);history.addView(predictionView);
         LinearLayout recent=card();root.addView(recent);recent.addView(text("RAUNDI ZA HIVI KARIBUNI",14,WHITE,true));
         recentView=text("Bado hakuna matokeo.",14,0xffc5cad5,false);recentView.setPadding(0,dp(8),0,0);recent.addView(recentView);
 
@@ -152,6 +153,19 @@ public class MainActivity extends Activity {
         int sample=Math.min(30,n),sr=0,sb=0;for(int i=n-sample;i<n;i++)if(rounds.get(i).equals("R"))sr++;else sb++;
         if(sample<5)trendView.setText("Ongeza angalau raundi 5 ili kuona muhtasari wa sampuli.");
         else trendView.setText(String.format(Locale.US,"Raundi %d za mwisho: RED %.1f%% • BLACK %.1f%%. Muhtasari wa nyuma tu.",sample,100.0*sr/sample,100.0*sb/sample));
+        if(n<10){
+            predictionView.setText("MAKADIRIO: Ongeza raundi "+(10-n)+" zaidi. Tunahitaji angalau 10 za historia.");
+        }else{
+            int window=Math.min(20,n),wr=0,wb=0;
+            for(int i=n-window;i<n;i++){if(rounds.get(i).equals("R"))wr++;else wb++;}
+            double rp=100.0*wr/window,bp=100.0*wb/window;
+            if(Math.abs(rp-bp)<10.0){
+                predictionView.setText(String.format(Locale.US,"MAKADIRIO: Hakuna upande unaoongoza wazi. RED %.0f%% • BLACK %.0f%% (historia ya %d).",rp,bp,window));
+            }else{
+                String lead=rp>bp?"RED":"BLACK";
+                predictionView.setText(String.format(Locale.US,"MAKADIRIO YA TAKWIMU: Mwelekeo unaelemea %s. RED %.0f%% • BLACK %.0f%% (raundi %d za mwisho).",lead,rp,bp,window));
+            }
+        }
         if(n==0)recentView.setText("Bado hakuna matokeo.");else{
             StringBuilder s=new StringBuilder();for(int i=n-1;i>=Math.max(0,n-19);i--){if(s.length()>0)s.append("   ");s.append(rounds.get(i).equals("R")?"🔴":"⚫");}
             recentView.setText(s.toString());
